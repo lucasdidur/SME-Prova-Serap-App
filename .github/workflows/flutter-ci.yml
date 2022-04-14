@@ -25,13 +25,6 @@ jobs:
         distribution: 'zulu'
         java-version: ${{ env.java_version }}
     
-    # # Setup cache
-    # - name: Cache Flutter dependencies
-    #   uses: actions/cache@v3
-    #   with:
-    #     path: /opt/hostedtoolcache/flutter
-    #     key: ${{ runner.OS }}-flutter-install-cache-${{ env.flutter_version }}
-
     # Preparar ambiente
     - uses: subosito/flutter-action@v2
       with:
@@ -56,7 +49,7 @@ jobs:
         secrets: APP_CONFIG,GOOGLE_SERVICES,
 
     - name: Ajustando configuração
-      env: # Ou como uma variável de ambiente
+      env: 
         APP_CONFIG: ${{ secrets[env.APP_CONFIG_NAME] }}
         GOOGLE_SERVICES: ${{ secrets[env.GOOGLE_SERVICES_NAME] }}
         KEY_JKS: ${{ secrets.KEY_JKS }}
@@ -67,20 +60,6 @@ jobs:
         echo $GOOGLE_SERVICES > android/app/google-services.json
         echo $KEY_JKS > android/key.jks
       
-    - name: Fetch action
-      id: pl
-      uses: Rishabh510/Path-lister-action@master
-      with:
-        path: "android/"
-        type: ".jks"
-
-    - name: Output results
-      run: |
-        echo "Found ${{ steps.pl.outputs.path_count }} file(s) with this extension:"
-        for i in ${{ steps.pl.outputs.paths }}; do
-        echo $i
-          done
-
     # Install dependencies
     - name: Install dependencies
       run: flutter pub get
