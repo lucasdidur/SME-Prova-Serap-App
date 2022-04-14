@@ -7,9 +7,6 @@ on:
     branches:
     - development
     
-# on: push    # Default will running for every branch.
-
-
 env:
   flutter_version: "2.10.4"
   java_version: "11"
@@ -65,8 +62,7 @@ jobs:
     - name: Ajustando configuração
       env: # Ou como uma variável de ambiente
         APP_CONFIG: ${{ secrets[env.APP_CONFIG_NAME] }}
-      run: |
-        mkdir -p config && echo $APP_CONFIG > config/app_config.json
+      run: mkdir -p config && echo $APP_CONFIG > config/app_config.json
 
     # Install dependencies
     - name: Install dependencies
