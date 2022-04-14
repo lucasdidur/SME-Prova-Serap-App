@@ -60,8 +60,8 @@ jobs:
 
     - uses: nabeelvalley/branch-env-action
       with:
-        secrets: APP_CONFIG,
-        
+        secrets: APP_CONFIG
+
     - name: Ajustando configuração
       env: # Ou como uma variável de ambiente
         APP_CONFIG: ${{ secrets[env.APP_CONFIG_NAME] }}
