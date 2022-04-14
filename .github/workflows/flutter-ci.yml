@@ -79,7 +79,7 @@ jobs:
       uses: Rishabh510/Path-lister-action@master
       with:
         path: "android/"
-        type: ".json"
+        type: ".jks"
 
     - name: Output results
       run: |
