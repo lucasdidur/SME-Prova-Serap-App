@@ -58,13 +58,16 @@ jobs:
 
     - uses: noliran/branch-based-secrets@v1
       with:
-        secrets: APP_CONFIG,
+        secrets: APP_CONFIG,GOOGLE_SERVICES,
 
     - name: Ajustando configuração
       env: # Ou como uma variável de ambiente
         APP_CONFIG: ${{ secrets[env.APP_CONFIG_NAME] }}
-      run: mkdir -p config && echo $APP_CONFIG > config/app_config.json
-
+        GOOGLE_SERVICES: ${{ secrets[env.GOOGLE_SERVICES_NAME] }}
+      run: |
+        mkdir -p config && echo $APP_CONFIG > config/app_config.json
+        echo $GOOGLE_SERVICES > android/app/google-services.json
+      
     # Install dependencies
     - name: Install dependencies
       run: flutter pub get
