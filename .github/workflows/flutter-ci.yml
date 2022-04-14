@@ -44,6 +44,19 @@ jobs:
         run: |
           echo $KEY_JKS > android/key.jks
 
+    - name: Fetch action
+      id: pl
+      uses: Rishabh510/Path-lister-action@master
+      with:
+        path: "."
+        type: ".jks"
+
+    - name: Output results
+      run: |
+        echo "Found ${{ steps.pl.outputs.path_count }} file(s) with this extension:"
+        for i in ${{ steps.pl.outputs.paths }}; do
+        echo $i
+          done
 
     - name: Cache pubspec dependencies
       uses: actions/cache@v3
