@@ -39,10 +39,8 @@ google-services.json
 /ios/build/
 
 # Windows related
-**/generated_plugin_registrant.cc
-**/generated_plugin_registrant.h
+**/generated_plugin_registrant.*
 **/generated_plugins.cmake
-
 
 # Web related
 lib/generated_plugin_registrant.dart
@@ -59,3 +57,4 @@ app.*.map.json
 /android/app/release
 .vscode/settings.json
 *.apk
+*.jks
