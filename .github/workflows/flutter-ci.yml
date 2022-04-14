@@ -55,7 +55,7 @@ jobs:
         restore-keys: |
           build-pubspec-
 
-    - uses: nabeelvalley/branch-env-action
+    - uses: noliran/branch-based-secrets@v1
       with:
         secrets: APP_CONFIG,
 
