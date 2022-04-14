@@ -4,9 +4,8 @@ google-services.json
 .vscode/launch.json
 
 # Miscellaneous
-*.g.dart
-*.chopper.dart
 *.class
+*.lock
 *.log
 *.pyc
 *.swp
@@ -38,6 +37,12 @@ google-services.json
 .pub/
 /build/
 /ios/build/
+
+# Windows related
+**/generated_plugin_registrant.cc
+**/generated_plugin_registrant.h
+**/generated_plugins.cmake
+
 
 # Web related
 lib/generated_plugin_registrant.dart
