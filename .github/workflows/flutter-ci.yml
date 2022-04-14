@@ -27,12 +27,23 @@ jobs:
       with:
         java-version: ${{ env.java_version }}
     
-    # Setup cache
-    - name: Cache Flutter dependencies
-      uses: actions/cache@v1
+    # # Setup cache
+    # - name: Cache Flutter dependencies
+    #   uses: actions/cache@v1
+    #   with:
+    #     path: /opt/hostedtoolcache/flutter
+    #     key: ${{ runner.OS }}-flutter-install-cache-${{ env.flutter_version }}
+
+    # Preparar ambiente
+    - uses: subosito/flutter-action@v1
       with:
-        path: /opt/hostedtoolcache/flutter
-        key: ${{ runner.OS }}-flutter-install-cache-${{ env.flutter_version }}
+        flutter-version: ${{ env.flutter_version }}
+        cache: true
+      env:
+        KEY_JKS: ${{ secrets.KEY_JKS }}
+        KEY_PASSWORD: ${{ secrets.ALIAS_PASSWORD }}
+        ALIAS_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: echo $KEY_JKS > android/key.jks
 
     - name: Cache pubspec dependencies
       uses: actions/cache@v2
@@ -46,21 +57,11 @@ jobs:
         key: build-pubspec-${{ hashFiles('**/pubspec.lock') }}
         restore-keys: |
           build-pubspec-
-
+        
     # Install dependencies
     - name: Install dependencies
-      run:  flutter pub get
+      run: flutter pub get
 
-    # Preparar ambiente
-    - uses: subosito/flutter-action@v1
-      with:
-        flutter-version: ${{ env.flutter_version }}
-      env:
-        KEY_JKS: ${{ secrets.KEY_JKS }}
-        KEY_PASSWORD: ${{ secrets.ALIAS_PASSWORD }}
-        ALIAS_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        run: echo $KEY_JKS > android/key.jks
-        
     # Build apk relase
     - name: Build 
       run: flutter build apk --release
