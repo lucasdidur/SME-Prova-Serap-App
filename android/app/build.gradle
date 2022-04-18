@@ -47,10 +47,10 @@ android {
     
     signingConfigs {
         release {
-            storeFile file("$System.env.KEY_JKS_PATH")
+            storeFile file("../key.jks")
             storePassword = "$System.env.KEY_PASSWORD"
             keyAlias = "release"
-            keyPassword = "$System.env.ALIAS_PASSWORD"
+            keyPassword = "$System.env.KEY_ALIAS_PASSWORD"
         }
     }
 
