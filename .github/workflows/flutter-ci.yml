@@ -61,6 +61,8 @@ jobs:
         GOOGLE_SERVICES: ${{ secrets[env.GOOGLE_SERVICES_NAME] }}
         ALIAS_PASSWORD: ${{ secrets.ALIAS_PASSWORD }}
         KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        KEY_JKS_PATH: ${{ secrets.KEY_JKS_PATH }}
+        KEY_JKS: ${{ secrets.KEY_JKS }}
       run: |
         mkdir -p config && echo $APP_CONFIG > config/app_config.json
         echo $GOOGLE_SERVICES > android/app/google-services.json
