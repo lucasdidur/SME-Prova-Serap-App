@@ -87,7 +87,7 @@ jobs:
       uses: timheuer/base64-to-file@v1.1
       with:
         fileName: key.jks
-        fileDir: './android/app/'
+        fileDir: 'android/app/'
         encodedString: ${{ secrets.KEY_JKS }}
 
     - name: Creating key.properties
