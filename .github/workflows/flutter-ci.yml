@@ -19,21 +19,17 @@ jobs:
     steps:
     
     # Setup Java environment in order to build the Android app.
-    - uses: actions/checkout@v3
-    - uses: actions/setup-java@v3
+    - name: Checkout
+      uses: actions/checkout@v3
+    
+    - name: Setup Java
+      uses: actions/setup-java@v3
       with:
         distribution: 'zulu'
         java-version: ${{ env.java_version }}
-    
-    # # Setup cache
-    # - name: Cache Flutter dependencies
-    #   uses: actions/cache@v3
-    #   with:
-    #     path: /opt/hostedtoolcache/flutter
-    #     key: ${{ runner.OS }}-flutter-install-cache-${{ env.flutter_version }}
 
-    # Preparar ambiente
-    - uses: subosito/flutter-action@v2
+    - name: Setup flutter
+      uses: subosito/flutter-action@v2
       with:
         flutter-version: ${{ env.flutter_version }}
         cache: true
@@ -51,11 +47,34 @@ jobs:
         restore-keys: |
           build-pubspec-
 
-    - uses: noliran/branch-based-secrets@v1
+    - name: Cache build runner
+      uses: actions/cache@v3
+      with:
+        path: |
+          **/.dart_tool
+          **/*.g.dart
+          **/*.mocks.dart
+          **/*.config.dart
+        key: build-runner-${{ hashFiles('**/asset_graph.json', '**/*.dart', '**/pubspec.lock', '**/outputs.json') }}
+        restore-keys: |
+          build-runner-
+
+    - name: Caching Gradle packages
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+
+    - name: Setup environment variables
+      uses: noliran/branch-based-secrets@v1
       with:
         secrets: APP_CONFIG,GOOGLE_SERVICES,
 
-    - name: Ajustando configuração
+    - name: Setup configurations
       env: # Ou como uma variável de ambiente
         APP_CONFIG: ${{ secrets[env.APP_CONFIG_NAME] }}
         GOOGLE_SERVICES: ${{ secrets[env.GOOGLE_SERVICES_NAME] }}
@@ -63,54 +82,26 @@ jobs:
         mkdir -p config && echo $APP_CONFIG > config/app_config.json
         echo $GOOGLE_SERVICES > android/app/google-services.json
 
-    # - name: Set up key.properties
-    #   env: 
-    #     KEY_JKS_PATH: ${{ secrets.KEY_JKS_PATH }}
-    #     KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-    #     KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-    #     KEY_ALIAS_PASSWORD: ${{ secrets.KEY_ALIAS_PASSWORD }}
-    #   run: |
-    #     echo "${{ secrets.KEY_JKS }}" | base64 --decode > "${{ secrets.KEY_JKS_PATH }}"
-    #     cat >> "./android/key.properties" <<EOF
-    #     storeFile=$KEY_JKS_PATH
-    #     storePassword=$KEY_PASSWORD
-    #     keyPassword=$KEY_ALIAS_PASSWORD
-    #     keyAlias=$KEY_ALIAS
-    #     EOF
-
-    - name: Download Android keystore
+    - name: Setup Android keystore
       id: android_keystore
       uses: timheuer/base64-to-file@v1.0.3
       with:
         fileName: key.jks
         encodedString: ${{ secrets.KEY_JKS }}
 
-    - name: Create key.properties
+    - name: Creating key.properties
       run: |
         echo "storeFile=${{ steps.android_keystore.outputs.filePath }}" > android/key.properties
         echo "storePassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
+        echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties      
         echo "keyPassword=${{ secrets.KEY_ALIAS_PASSWORD }}" >> android/key.properties
-        echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
 
-
-    # - name: Decode Keystore
-    #   id: decode_keystore
-    #   uses: timheuer/base64-to-file@v1.1
-    #   with:
-    #     fileName: 'key.jks'
-    #     fileDir: './android/'
-    #     encodedString: ${{ secrets.KEY_JKS }}
-      
-
-    # Install dependencies
     - name: Install dependencies
       run: flutter pub get
 
-    # Build apk relase
-    - name: Build 
+    - name: Build release
       run: flutter build apk --release
     
-    # Save apk
     - uses: actions/upload-artifact@v1
       with:
         name: release-apk
