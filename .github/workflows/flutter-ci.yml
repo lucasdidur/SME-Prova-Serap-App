@@ -91,15 +91,15 @@ jobs:
 
     - name: Creating key.properties
       run: |
-        echo "storeFile=${{ steps.android_keystore.outputs.filePath }}" > android/key.properties
-        echo "storePassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
-        echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties      
-        echo "keyPassword=${{ secrets.KEY_ALIAS_PASSWORD }}" >> android/key.properties
+        echo "storeFile=${{ steps.android_keystore.outputs.filePath }}\n" > android/key.properties
+        echo "storePassword=${{ secrets.KEY_PASSWORD }}\n" >> android/key.properties
+        echo "keyAlias=${{ secrets.KEY_ALIAS }}\n" >> android/key.properties      
+        echo "keyPassword=${{ secrets.KEY_ALIAS_PASSWORD }}\n" >> android/key.properties
 
     - name: Install dependencies
       run: flutter pub get
 
-    - name: Build release
+    - name: Build apk
       run: flutter build apk --release
     
     - uses: actions/upload-artifact@v1
