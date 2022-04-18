@@ -78,13 +78,13 @@ jobs:
         storeFile=$KEY_JKS_PATH
         EOF    
 
-    - name: Decode Keystore
-      id: decode_keystore
-      uses: timheuer/base64-to-file@v1.1
-      with:
-        fileName: 'key.jks'
-        fileDir: './android/'
-        encodedString: ${{ secrets.KEY_JKS }}
+    # - name: Decode Keystore
+    #   id: decode_keystore
+    #   uses: timheuer/base64-to-file@v1.1
+    #   with:
+    #     fileName: 'key.jks'
+    #     fileDir: './android/'
+    #     encodedString: ${{ secrets.KEY_JKS }}
       
 
     # Install dependencies
