@@ -84,14 +84,15 @@ jobs:
 
     - name: Setup Android keystore
       id: android_keystore
-      uses: timheuer/base64-to-file@v1.0.3
+      uses: timheuer/base64-to-file@v1.1
       with:
         fileName: key.jks
+        fileDir: './android/app/'
         encodedString: ${{ secrets.KEY_JKS }}
 
     - name: Creating key.properties
       run: |
-        echo "storeFile=${{ steps.android_keystore.outputs.filePath }}\n" > android/key.properties
+        echo "storeFile=key.jks\n" > android/key.properties
         echo "storePassword=${{ secrets.KEY_PASSWORD }}\n" >> android/key.properties
         echo "keyAlias=${{ secrets.KEY_ALIAS }}\n" >> android/key.properties      
         echo "keyPassword=${{ secrets.KEY_ALIAS_PASSWORD }}\n" >> android/key.properties
