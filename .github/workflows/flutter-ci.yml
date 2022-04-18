@@ -64,28 +64,29 @@ jobs:
       run: |
         mkdir -p config && echo $APP_CONFIG > config/app_config.json
         echo $GOOGLE_SERVICES > android/app/google-services.json
+        echo $KEY_JKS | base64 --decode > $KEY_JKS_PATH
 
-    - name: Decode Keystore
-      id: decode_keystore
-      uses: timheuer/base64-to-file@v1.1
-      with:
-        fileName: 'key.jks'
-        fileDir: './android/'
-        encodedString: ${{ secrets.KEY_JKS }}
+    # - name: Decode Keystore
+    #   id: decode_keystore
+    #   uses: timheuer/base64-to-file@v1.1
+    #   with:
+    #     fileName: 'key.jks'
+    #     fileDir: './android/'
+    #     encodedString: ${{ secrets.KEY_JKS }}
       
-    - name: Fetch action
-      id: pl
-      uses: Rishabh510/Path-lister-action@master
-      with:
-        path: "android/"
-        type: ".jks"
+    # - name: Fetch action
+    #   id: pl
+    #   uses: Rishabh510/Path-lister-action@master
+    #   with:
+    #     path: "android/"
+    #     type: ".jks"
 
-    - name: Output results
-      run: |
-        echo "Found ${{ steps.pl.outputs.path_count }} file(s) with this extension:"
-        for i in ${{ steps.pl.outputs.paths }}; do
-        echo $i
-          done
+    # - name: Output results
+    #   run: |
+    #     echo "Found ${{ steps.pl.outputs.path_count }} file(s) with this extension:"
+    #     for i in ${{ steps.pl.outputs.paths }}; do
+    #     echo $i
+    #       done
 
     # Install dependencies
     - name: Install dependencies
