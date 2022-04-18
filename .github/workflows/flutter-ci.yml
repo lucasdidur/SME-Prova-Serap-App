@@ -63,20 +63,35 @@ jobs:
         mkdir -p config && echo $APP_CONFIG > config/app_config.json
         echo $GOOGLE_SERVICES > android/app/google-services.json
 
-    - name: Set up key.properties
-      env: 
-        KEY_JKS_PATH: ${{ secrets.KEY_JKS_PATH }}
-        KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-        KEY_ALIAS_PASSWORD: ${{ secrets.KEY_ALIAS_PASSWORD }}
+    # - name: Set up key.properties
+    #   env: 
+    #     KEY_JKS_PATH: ${{ secrets.KEY_JKS_PATH }}
+    #     KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+    #     KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+    #     KEY_ALIAS_PASSWORD: ${{ secrets.KEY_ALIAS_PASSWORD }}
+    #   run: |
+    #     echo "${{ secrets.KEY_JKS }}" | base64 --decode > "${{ secrets.KEY_JKS_PATH }}"
+    #     cat >> "./android/key.properties" <<EOF
+    #     storeFile=$KEY_JKS_PATH
+    #     storePassword=$KEY_PASSWORD
+    #     keyPassword=$KEY_ALIAS_PASSWORD
+    #     keyAlias=$KEY_ALIAS
+    #     EOF
+
+    - name: Download Android keystore
+      id: android_keystore
+      uses: timheuer/base64-to-file@v1.0.3
+      with:
+        fileName: key.jks
+        encodedString: ${{ secrets.KEY_JKS }}
+
+    - name: Create key.properties
       run: |
-        echo "${{ secrets.KEY_JKS }}" | base64 --decode > "${{ secrets.KEY_JKS_PATH }}"
-        cat >> "./android/key.properties" <<EOF
-        storeFile=$KEY_JKS_PATH
-        storePassword=$KEY_PASSWORD
-        keyPassword=$KEY_ALIAS_PASSWORD
-        keyAlias=$KEY_ALIAS
-        EOF
+        echo "storeFile=${{ steps.android_keystore.outputs.filePath }}" > android/key.properties
+        echo "storePassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
+        echo "keyPassword=${{ secrets.KEY_ALIAS_PASSWORD }}" >> android/key.properties
+        echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
+
 
     # - name: Decode Keystore
     #   id: decode_keystore
